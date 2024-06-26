@@ -10,7 +10,7 @@ on:
       - completed
 
 jobs:
-  followupjob4:
+  followupRes:
     runs-on: ubuntu-latest
 
     steps:
