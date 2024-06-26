@@ -27,13 +27,13 @@ def getPages(soupPage, url):
         print(f"Failed to parse number of pages for URL: {url} - {e}")
         return 0
 
-def cluster_extractor(soup):
+def garden_extractor(soup):
     try:
         title = soup.get('title')
     except KeyError:
         title = None
 
-    property_type = "Townhouse / Cluster"
+    property_type = "Garden Cottage"
 
     try:
         list_price = soup.find('div',class_='listing-result__price txt-heading-2')
@@ -63,18 +63,20 @@ def cluster_extractor(soup):
         agent_url = None
 
     try:
-        size = None
+        floor_size = None
+        erf_size = None
         features = soup.find_all('span', class_='listing-result__feature')
         for feature in features:
             icon = feature.find('svg').find('use').get('xlink:href')
             if '#erf-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                erf_size = feature.text.strip()
+                erf_size = erf_size.replace('\xa0', ' ')
             elif '#property-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                floor_size = feature.text.strip()
+                floor_size = floor_size.replace('\xa0', ' ')
     except KeyError:
-        size = None
+        erf_size = None
+        floor_size = None
 
     script_data = soup.find('script', type='application/ld+json').string
     json_data = json.loads(script_data)
@@ -118,8 +120,106 @@ def cluster_extractor(soup):
 
     return {
         "Listing ID": prop_ID, "Title": title, "Property Type": property_type, "Price": list_priceV,"Street": street_address,  "Region": address_region, "Locality": address_locality,
-        "Bedrooms": bedroom, "Bathrooms": bathroom,
-        "Floor Size": size, "Garages": garages,
+        "Bedrooms": bedroom, "Bathrooms": bathroom, "Erf Size": erf_size,
+        "Floor Size": floor_size, "Garages": garages,
+        "URL": url, "Agent Name": agent_name, "Agent Url": agent_url,"Time_stamp":current_datetime}
+
+
+def cluster_extractor(soup):
+    try:
+        title = soup.get('title')
+    except KeyError:
+        title = None
+
+    property_type = "Townhouse / Cluster"
+
+    try:
+        list_price = soup.find('div',class_='listing-result__price txt-heading-2')
+        list_priceV = list_price.text.strip()
+        list_priceV = list_priceV.replace('\xa0', ' ')
+    except KeyError:
+        list_priceV = None
+    try:
+        agent_name = None
+        agent_url = None
+        agent_div = soup.find('div', class_='listing-result__advertiser txt-small-regular')
+
+        if agent_div:
+            try:
+                agent_detail = agent_div.find('img', class_='listing-result__logo')
+                agent_name = agent_detail.get('alt')
+                agent_url = agent_detail.get('src')
+                agent_id_match = re.search(r'offices/(\d+)', agent_url)
+                if agent_id_match:
+                    agent_id = agent_id_match.group(1)
+                    agent_url = f"https://www.privateproperty.co.za/estate-agency/estate-agent/{agent_id}"
+            except:
+                agent_name = "Private Seller"
+                agent_url = None
+    except KeyError:
+        agent_name = None
+        agent_url = None
+
+    try:
+        floor_size = None
+        erf_size = None
+        features = soup.find_all('span', class_='listing-result__feature')
+        for feature in features:
+            icon = feature.find('svg').find('use').get('xlink:href')
+            if '#erf-size' in icon:
+                erf_size = feature.text.strip()
+                erf_size = erf_size.replace('\xa0', ' ')
+            elif '#property-size' in icon:
+                floor_size = feature.text.strip()
+                floor_size = floor_size.replace('\xa0', ' ')
+    except KeyError:
+        erf_size = None
+        floor_size = None
+
+    script_data = soup.find('script', type='application/ld+json').string
+    json_data = json.loads(script_data)
+
+    try:
+        street_address = json_data['address']['streetAddress']
+    except KeyError:
+        street_address = None
+    try:
+        address_locality = json_data['address']['addressLocality']
+    except KeyError:
+        address_locality = None
+    try:
+        address_region = json_data['address']['addressRegion']
+    except KeyError:
+        address_region = None
+
+    try:
+        url = json_data['url']
+        prop_ID_match = re.search(r'/([^/]+)$', url)
+        if prop_ID_match:
+            prop_ID = prop_ID_match.group(1)
+        else:
+            prop_ID = None
+    except KeyError:
+        url = None
+        prop_ID = None
+
+    bedroom = None
+    bathroom = None
+    garages = None
+
+    for prop in json_data.get('additionalProperty', []):
+        if prop['name'] == 'Bedrooms':
+            bedroom = prop['value']
+        elif prop['name'] == 'Bathrooms':
+            bathroom = prop['value']
+        elif prop['name'] == 'Garages':
+            garages = prop['value']
+    current_datetime = datetime.now().strftime('%Y-%m-%d')
+
+    return {
+        "Listing ID": prop_ID, "Title": title, "Property Type": property_type, "Price": list_priceV,"Street": street_address,  "Region": address_region, "Locality": address_locality,
+        "Bedrooms": bedroom, "Bathrooms": bathroom, "Erf Size": erf_size,
+        "Floor Size": floor_size, "Garages": garages,
         "URL": url, "Agent Name": agent_name, "Agent Url": agent_url,"Time_stamp":current_datetime}
 
 def house_extractor(soup):
@@ -158,18 +258,20 @@ def house_extractor(soup):
         agent_url = None
 
     try:
-        size = None
+        floor_size = None
+        erf_size = None
         features = soup.find_all('span', class_='listing-result__feature')
         for feature in features:
             icon = feature.find('svg').find('use').get('xlink:href')
             if '#erf-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                erf_size = feature.text.strip()
+                erf_size = erf_size.replace('\xa0', ' ')
             elif '#property-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                floor_size = feature.text.strip()
+                floor_size = floor_size.replace('\xa0', ' ')
     except KeyError:
-        size = None
+        erf_size = None
+        floor_size = None
 
     script_data = soup.find('script', type='application/ld+json').string
     json_data = json.loads(script_data)
@@ -213,8 +315,8 @@ def house_extractor(soup):
 
     return {
         "Listing ID": prop_ID, "Title": title, "Property Type": property_type, "Price": list_priceV,"Street": street_address,  "Region": address_region, "Locality": address_locality,
-        "Bedrooms": bedroom, "Bathrooms": bathroom,
-        "Floor Size": size, "Garages": garages,
+        "Bedrooms": bedroom, "Bathrooms": bathroom, "Erf Size": erf_size,
+        "Floor Size": floor_size, "Garages": garages,
         "URL": url, "Agent Name": agent_name, "Agent Url": agent_url,"Time_stamp":current_datetime}
 
 def apartment_extractor(soup):
@@ -253,18 +355,20 @@ def apartment_extractor(soup):
         agent_url = None
 
     try:
-        size = None
+        floor_size = None
+        erf_size = None
         features = soup.find_all('span', class_='listing-result__feature')
         for feature in features:
             icon = feature.find('svg').find('use').get('xlink:href')
             if '#erf-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                erf_size = feature.text.strip()
+                erf_size = erf_size.replace('\xa0', ' ')
             elif '#property-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                floor_size = feature.text.strip()
+                floor_size = floor_size.replace('\xa0', ' ')
     except KeyError:
-        size = None
+        erf_size = None
+        floor_size = None
 
     script_data = soup.find('script', type='application/ld+json').string
     json_data = json.loads(script_data)
@@ -308,8 +412,8 @@ def apartment_extractor(soup):
 
     return {
         "Listing ID": prop_ID, "Title": title, "Property Type": property_type, "Price": list_priceV,"Street": street_address,  "Region": address_region, "Locality": address_locality,
-        "Bedrooms": bedroom, "Bathrooms": bathroom,
-        "Floor Size": size, "Garages": garages,
+        "Bedrooms": bedroom, "Bathrooms": bathroom, "Erf Size": erf_size,
+        "Floor Size": floor_size, "Garages": garages,
         "URL": url, "Agent Name": agent_name, "Agent Url": agent_url,"Time_stamp":current_datetime}
 
 def land_extractor(soup):
@@ -348,18 +452,20 @@ def land_extractor(soup):
         agent_url = None
 
     try:
-        size = None
+        floor_size = None
+        erf_size = None
         features = soup.find_all('span', class_='listing-result__feature')
         for feature in features:
             icon = feature.find('svg').find('use').get('xlink:href')
             if '#erf-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                erf_size = feature.text.strip()
+                erf_size = erf_size.replace('\xa0', ' ')
             elif '#property-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                floor_size = feature.text.strip()
+                floor_size = floor_size.replace('\xa0', ' ')
     except KeyError:
-        size = None
+        erf_size = None
+        floor_size = None
 
     script_data = soup.find('script', type='application/ld+json').string
     json_data = json.loads(script_data)
@@ -403,8 +509,8 @@ def land_extractor(soup):
 
     return {
         "Listing ID": prop_ID, "Title": title, "Property Type": property_type, "Price": list_priceV,"Street": street_address,  "Region": address_region, "Locality": address_locality,
-        "Bedrooms": bedroom, "Bathrooms": bathroom,
-        "Floor Size": size, "Garages": garages,
+        "Bedrooms": bedroom, "Bathrooms": bathroom, "Erf Size": erf_size,
+        "Floor Size": floor_size, "Garages": garages,
         "URL": url, "Agent Name": agent_name, "Agent Url": agent_url,"Time_stamp":current_datetime}
 
 def farm_extractor(soup):
@@ -443,18 +549,20 @@ def farm_extractor(soup):
         agent_url = None
 
     try:
-        size = None
+        floor_size = None
+        erf_size = None
         features = soup.find_all('span', class_='listing-result__feature')
         for feature in features:
             icon = feature.find('svg').find('use').get('xlink:href')
             if '#erf-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                erf_size = feature.text.strip()
+                erf_size = erf_size.replace('\xa0', ' ')
             elif '#property-size' in icon:
-                size = feature.text.strip()
-                size = size.replace('\xa0', ' ')
+                floor_size = feature.text.strip()
+                floor_size = floor_size.replace('\xa0', ' ')
     except KeyError:
-        size = None
+        erf_size = None
+        floor_size = None
 
     script_data = soup.find('script', type='application/ld+json').string
     json_data = json.loads(script_data)
@@ -498,15 +606,15 @@ def farm_extractor(soup):
 
     return {
         "Listing ID": prop_ID, "Title": title, "Property Type": property_type, "Price": list_priceV,"Street": street_address,  "Region": address_region, "Locality": address_locality,
-        "Bedrooms": bedroom, "Bathrooms": bathroom,
-        "Floor Size": size, "Garages": garages,
+        "Bedrooms": bedroom, "Bathrooms": bathroom, "Erf Size": erf_size,
+        "Floor Size": floor_size, "Garages": garages,
         "URL": url, "Agent Name": agent_name, "Agent Url": agent_url,"Time_stamp":current_datetime}
 
 
 ######################################Functions##########################################################
 
 async def main():
-    fieldnames = ['Listing ID', 'Title', 'Property Type', 'Price', 'Street', 'Region', 'Locality','Bedrooms', 'Bathrooms', 'Floor Size', 'Garages', 'URL',
+    fieldnames = ['Listing ID', 'Title', 'Property Type', 'Price', 'Street', 'Region', 'Locality','Bedrooms', 'Bathrooms', 'Erf Size', 'Floor Size', 'Garages', 'URL',
                   'Agent Name', 'Agent Url', 'Time_stamp']
     filename = "PrivatePropRes.csv"
 
@@ -517,7 +625,7 @@ async def main():
             start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             async def process_province(prov):
-                response_text = await fetch(session, f"https://www.privateproperty.co.za/for-sale/mpumalanga/{prov}")
+                response_text = await fetch(session, f"https://www.privateproperty.co.za/to-rent/mpumalanga/{prov}")
                 home_page = BeautifulSoup(response_text, 'html.parser')
 
                 links = []
@@ -565,6 +673,29 @@ async def main():
                                 writer.writerow(data)
                     except Exception as e:
                         print(f"An error occurred while processing link {x}: {e}")
+
+
+                async def process_link3(x):
+                    try:
+                        x = f"{x}?pt=3"
+                        x_response_text = await fetch(session, x)
+                        x_page = BeautifulSoup(x_response_text, 'html.parser')
+                        num_pages = getPages(x_page, x)
+
+                        for s in range(1, num_pages + 1):
+                            if s % 10 == 0:
+                                sleep_duration = random.randint(10, 15)
+                                await asyncio.sleep(sleep_duration)
+
+                            prop_page_text = await fetch(session, f"{x}&page={s}")
+                            x_prop = BeautifulSoup(prop_page_text, 'html.parser')
+                            prop_contain = x_prop.find_all('a', class_='listing-result')
+                            for prop in prop_contain:
+                                data = garden_extractor(prop)
+                                writer.writerow(data)
+                    except Exception as e:
+                        print(f"An error occurred while processing link {x}: {e}")
+
 
                 async def process_link5(x):
                     try:
@@ -652,8 +783,8 @@ async def main():
 
                 tasks = []
                 for x in new_links:
-                    tasks.extend([process_link10(x), process_link5(x), process_link2(x), process_link1(x), process_link7(x)])
-                
+                    tasks.extend([process_link10(x), process_link5(x), process_link2(x), process_link1(x), process_link7(x), process_link3(x)])
+
                 await asyncio.gather(*tasks)
 
             await asyncio.gather(*(process_province(prov) for prov in range(2, 11)))
@@ -664,19 +795,19 @@ async def main():
 
         # Upload the CSV file to Azure Blob Storage
         connection_string = "DefaultEndpointsProtocol=https;AccountName=privateproperty;AccountKey=zX/k04pby4o1V9av1a5U2E3fehg+1bo61C6cprAiPVnql+porseL1NVw6SlBBCnVaQKgxwfHjZyV+AStKg0N3A==;BlobEndpoint=https://privateproperty.blob.core.windows.net/;QueueEndpoint=https://privateproperty.queue.core.windows.net/;TableEndpoint=https://privateproperty.table.core.windows.net/;FileEndpoint=https://privateproperty.file.core.windows.net/;"
-        container_name = "privateprop"
+        container_name = "privatepropre"
         blob_name = "PrivatePropRes.csv"
 
         blob_client = BlobClient.from_connection_string(connection_string, container_name, blob_name)
-        
+
         with open(filename, "rb") as data:
             blob_client.upload_blob(data, overwrite=True)
             print(f"File uploaded to Azure Blob Storage: {blob_name}")
 
-            
 
-        body = ''
-        requests.post('https://prod2-09.southafricanorth.logic.azure.com:443/workflows/623f55b4346742178048b209a003f895/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=PxhThWSLOC3sS3JAg54Z3uZEhTvU9zAbNIhkaAhMPN0', json=body)        
+
+        # body = ''
+        # requests.post('https://prod2-09.southafricanorth.logic.azure.com:443/workflows/623f55b4346742178048b209a003f895/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=PxhThWSLOC3sS3JAg54Z3uZEhTvU9zAbNIhkaAhMPN0', json=body)
 
 
 
