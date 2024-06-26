@@ -1,9 +1,6 @@
 name: Web PrivPropRes
 
 on:
-  push:
-    branches:
-     - main
   workflow_run:
     workflows: ["Web PrivPropCom"]
     types:
