@@ -1,0 +1,9 @@
+requests-html
+requests
+pyppeteer
+pyquery
+beautifulsoup4
+random2
+threaded
+aiohttp
+azure-storage-blob
