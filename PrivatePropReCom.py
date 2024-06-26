@@ -892,6 +892,7 @@ def extractor(soup, url): # extracts from created urls
     garage = None
     parking = None
     storeys = None
+    open_park = None
 
     try:
         prop_feat_div = soup.find('div', id='property-features-list')
@@ -911,6 +912,8 @@ def extractor(soup, url): # extracts from created urls
                 garage = feat.find('span',class_='property-features__value').text.strip()
             elif '#covered-parkiung' in feat_icon:
                 parking = feat.find('span',class_='property-features__value').text.strip()
+            elif '#parking-spaces' in feat_icon:
+                open_park = feat.find('span',class_='property-features__value').text.strip()
             elif '#storeys' in feat_icon:
                 storeys = feat.find('span',class_='property-features__value').text.strip()
 
@@ -923,6 +926,7 @@ def extractor(soup, url): # extracts from created urls
         garage = None
         parking = None
         storeys = None
+        open_park = None
 
     agent_name = None
     agent_url = None
@@ -949,13 +953,13 @@ def extractor(soup, url): # extracts from created urls
     return {
         "Listing ID": prop_ID, "Erf Size": erfSize, "Property Type": prop_type, "Floor Size": floor_size,
         "Rates and taxes": rates, "Levies": levy, "Bedrooms": beds, "Bathrooms": baths, "Lounges": lounge,
-        "Dining": dining, "Garages": garage, "Covered Parking": parking, "Storeys": storeys, "Agent Name": agent_name,
+        "Dining": dining, "Garages": garage, "Covered Parking": parking, "Storeys": storeys, "Open Parkings": open_park, "Agent Name": agent_name,
         "Agent Url": agent_url, "Time_stamp": current_datetime}
 
 ######################################Functions##########################################################
 async def main2():
     fieldnames2 = ['Listing ID', 'Erf Size', 'Property Type', 'Floor Size', 'Rates and taxes', 'Levies',
-                  'Bedrooms', 'Bathrooms', 'Lounges', 'Dining', 'Garages', 'Covered Parking', 'Storeys',
+                  'Bedrooms', 'Bathrooms', 'Lounges', 'Dining', 'Garages', 'Covered Parking', 'Storeys', 'Open Parkings',
                   'Agent Name', 'Agent Url', 'Time_stamp']
     filename2 = "PrivatePropRes(Inside)5.csv"
     ids = []
