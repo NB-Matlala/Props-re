@@ -1,11 +1,10 @@
 name: Web PrivPropDev
 
 on:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: '45 01 * * *' # Runs at 00:30 CAT (UTC+2)
+  workflow_run:
+    workflows: ["Web PrivPropRes"]
+    types:
+      - completed
 
 
 jobs:
