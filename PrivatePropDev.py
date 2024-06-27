@@ -201,7 +201,7 @@ def extractor(soup, list_url ,listID): # extracts from created urls
 
 ######################################Functions##########################################################
 async def main2():
-    fieldnames2 = ['Listing ID', 'Region', 'Province', 'Units Available', 'Agent Name', 'Agent Url', 'Time_stamp']
+    fieldnames2 = ['Listing ID', 'Region', 'Province', 'Units Available', 'Agent Name', 'Agent Url', 'URL', 'Time_stamp']
     filename2 = "PrivatePropRes(Inside).csv"
     ids = []
     semaphore2 = asyncio.Semaphore(500)
