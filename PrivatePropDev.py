@@ -19,9 +19,10 @@ async def fetch(session, url):
 
 def getPages(soupPage, url):
     try:
-        num_pg = soupPage.find('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
+        num_pg = soupPage.find('div', class_='development-results-page-grid__result-container-header').find('div', class_='development-results-page-grid__result-container-header-count')
         num_pgV = num_pg.text.strip()
-        num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
+        num_pgV = num_pgV[num_pgV.index('of '):]
+        num_pgV = num_pgV.replace('of ', '').replace(' results', '')
         pages = math.ceil(int(num_pgV) / 20)
         return pages
     except (ValueError, AttributeError) as e:
@@ -143,10 +144,11 @@ async def fetch2(session, url, semaphore):
 ######################################Functions##########################################################
 def getPages2(soupPage, url):
     try:
-        num_pg = soupPage.find('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
+        num_pg = soupPage.find('div', class_='development-results-page-grid__result-container-header').find('div', class_='development-results-page-grid__result-container-header-count')
         num_pgV = num_pg.text.strip()
-        num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
-        pages = math.ceil(int(num_pgV) / 20)
+        num_pgV = num_pgV[num_pgV.index('of '):]
+        num_pgV = num_pgV.replace('of ', '').replace(' results', '')
+        pages = math.ceil(int(num_pgV) / 20)        
         return pages
     except (ValueError, AttributeError) as e:
         print(f"Failed to parse number of pages for URL: {url} - {e}")
