@@ -211,7 +211,7 @@ async def main2():
             start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             async def process_province2(prov):
-                response_text = await fetch(session, f"https://www.privateproperty.co.za/developments/Gauteng/{prov}.htm")
+                response_text = await fetch(session2, f"https://www.privateproperty.co.za/developments/Gauteng/{prov}.htm")
                 new_links = []
                 new_links.append(f"https://www.privateproperty.co.za/developments/Gauteng/{prov}.htm")
 
