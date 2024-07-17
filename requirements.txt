@@ -7,4 +7,4 @@ random2
 threaded
 aiohttp
 azure-storage-blob
-lxml==4.0.0
+lxml
