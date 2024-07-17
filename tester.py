@@ -8,6 +8,6 @@ url = "https://www.airbnb.co.za/?tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes
 response = session.get(url)
 response.html.render()  # This executes the JavaScript
 
-soup = BeautifulSoup(response.html.html, 'lxml')
+soup = BeautifulSoup(response.html.html, 'html.parser')
 
 print(soup.prettify())
