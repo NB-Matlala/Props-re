@@ -18,13 +18,14 @@ async def fetch(session, url, semaphore):
 def getPages(soupPage, url):
     try:
         num_pg = soupPage.find('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
-        num_pgV = num_pg.text.strip()
+        num_pgV = num_pg.text.split('of ')[-1]
         num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
         pages = math.ceil(int(num_pgV) / 20)
         return pages
     except (ValueError, AttributeError) as e:
         print(f"Failed to parse number of pages for URL: {url} - {e}")
         return 0
+
 
 def getIds(soup):
     script_data = soup.find('script', type='application/ld+json').string
