@@ -250,7 +250,7 @@ async def main():
                 tasks = [process_id(list_id) for list_id in ids]
                 await asyncio.gather(*tasks)
 
-            await asyncio.gather(*(process_province(prov) for prov in range(5, 8))) #range(5, 11)
+            await asyncio.gather(*(process_province(prov) for prov in range(5, 11))) #range(5, 11)
             await process_ids()
             end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(f"Start Time: {start_time}")
@@ -342,13 +342,26 @@ def extractor_com(soup, url):
 
 def extractor_pics(soup, prop_id): # extracts from created urls
     try:
+        prop_ID = None
+        prop_div = soup.find('div', class_='property-features')
+        lists = prop_div.find('ul', class_='property-features__list')
+        features = lists.find_all('li')
+        for feature in features:
+            icon = feature.find('svg').find('use').get('xlink:href')
+            if '#listing-alt' in icon:
+                prop_ID = feature.find('span', class_='property-features__value').text.strip()
+    except KeyError:
+        prop_ID = None
+    list_id = prop_ID
+    
+    try:
         photo_div = soup.find('div', class_='details-page-photogrid__photos')
         photo_data = []
         img_links = photo_div.find_all('img')
         count = 0
         for url in img_links:
             count += 1
-            photo_data.append({'Listing_ID': prop_id, 'Photo_Link': url.get('src')})
+            photo_data.append({'Listing_ID': list_id, 'Photo_Link': url.get('src')})
             if count == 8:
                 break
         return photo_data        
