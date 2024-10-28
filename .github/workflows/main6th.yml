@@ -14,6 +14,7 @@ jobs:
       BASE_URL: ${{ vars.BASE_URL }}
       CON_STR: ${{ vars.CON_STR }}
       LOG_TRG: ${{ vars.LOG_STR }}
+      CON_STR_COMS: ${{ vars.CON_STR_COMS }}
       
     steps:
       - name: Checkout code
