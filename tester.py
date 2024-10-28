@@ -1,3 +1,4 @@
+import os
 from requests_html import HTMLSession
 from bs4 import BeautifulSoup
 
@@ -9,5 +10,6 @@ session = HTMLSession()
 # response.html.render()  # This executes the JavaScript
 
 # soup = BeautifulSoup(response.html.html, 'html.parser')
+secret_str = os.getenv("SECRET_STR")
 
-print("Code running..\n",${{secrets.New_STR}})
+print("Code running..\n",secret_str)
