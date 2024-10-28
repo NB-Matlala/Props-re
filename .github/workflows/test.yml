@@ -9,7 +9,7 @@ jobs:
   tester:
     runs-on: ubuntu-latest
     env:
-      SECRET_STR: ${{ secrets.New_STR }}  # Pass the secret to the environment
+      SECRET_STR: ${{ vars.T_STR }}  # Pass the secret to the environment
 
     steps:
       - name: Checkout code
