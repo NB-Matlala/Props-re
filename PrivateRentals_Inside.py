@@ -15,7 +15,7 @@ con_str = os.getenv("CON_STR")
 con_str_coms = os.getenv("CON_STR_COMS")
 
 new_links =[]
-
+ids = []
 async def fetch(session, url, semaphore):
     async with semaphore:
         async with session.get(url) as response:
@@ -169,7 +169,6 @@ async def main():
                   'Bedrooms', 'Bathrooms', 'Lounges', 'Dining', 'Garages', 'Covered Parking', 'Storeys', 'Open Parkings',
                   'Agent Name', 'Agent Url', 'Time_stamp']
     filename = "PrivateRentals(Inside).csv"
-    ids = []
     semaphore = asyncio.Semaphore(500)
 
     async with aiohttp.ClientSession() as session:
@@ -251,7 +250,7 @@ async def main():
                 tasks = [process_id(list_id) for list_id in ids]
                 await asyncio.gather(*tasks)
 
-            await asyncio.gather(*(process_province(prov) for prov in range(5, 11))) #range(5, 11)
+            await asyncio.gather(*(process_province(prov) for prov in range(5, 8))) #range(5, 11)
             await process_ids()
             end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(f"Start Time: {start_time}")
@@ -274,7 +273,7 @@ asyncio.run(main())
 
 
 #######################################################################################################################
-print(len(new_links), "to be exed. . .\n")
+print(len(ids), "to be exed. . .\n")
 
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
@@ -357,17 +356,17 @@ def extractor_pics(soup, prop_id): # extracts from created urls
         print('Pictures not found')
         return []
 
-def getIds(soup):
-    try:
-        script_data = soup.find('script', type='application/ld+json').string
-        json_data = json.loads(script_data)
-        url = json_data['url']
-        prop_ID_match = re.search(r'/([^/]+)$', url)
-        if prop_ID_match:
-            return prop_ID_match.group(1)
-    except Exception as e:
-        print(f"Error extracting ID from {soup}: {e}")
-    return None
+# def getIds(soup):
+#     try:
+#         script_data = soup.find('script', type='application/ld+json').string
+#         json_data = json.loads(script_data)
+#         url = json_data['url']
+#         prop_ID_match = re.search(r'/([^/]+)$', url)
+#         if prop_ID_match:
+#             return prop_ID_match.group(1)
+#     except Exception as e:
+#         print(f"Error extracting ID from {soup}: {e}")
+#     return None
 
 fieldnames = ['Listing ID', 'Description', 'Latitude', 'Longitude', 'Time_stamp']
 filename = "PrivRentComments.csv"
@@ -381,23 +380,13 @@ results = []
 pic_results = []
 
   
-for x_com in new_links:
+for list in ids:
     try:
-        land = session.get(x_com)
-        land_html = BeautifulSoup(land.content, 'html.parser')
-        pgs = getPages(land_html, x_com)
-        for p in range(1, pgs + 1):
-            home_page = session.get(f"{x_com}?page={p}")
-            soup = BeautifulSoup(home_page.content, 'html.parser')
-            prop_contain = soup.find_all('a', class_='listing-result')
-            for x_page in prop_contain:
-                prop_id = getIds(x_page)
-                if prop_id:
-                    list_url = f"{base_url}/for-sale/something/something/something/{prop_id}"
-                    queue.put({"url": list_url, "extract_function": extractor_com})
-                    queue.put({"url": list_url, "extract_function": extractor_pics})
+        list_url = f"{base_url}//to-rent/something/something/something/{list}"
+        queue.put({"url": list_url, "extract_function": extractor_com})
+        queue.put({"url": list_url, "extract_function": extractor_pics})
     except Exception as e:
-        print(f"Failed to process URL {x_com}: {e}")
+        print(f"Failed to process URL {list_url}: {e}")
 
 # Start threads
 num_threads = 10  
