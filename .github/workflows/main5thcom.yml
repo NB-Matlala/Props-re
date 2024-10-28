@@ -1,6 +1,7 @@
 name: Web PrivRentCom
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '30 17 * * 0' # Runs at 00:30 CAT (UTC+2)
 
