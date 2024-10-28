@@ -1,9 +1,10 @@
 name: Airtest
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
 jobs:
   tester:
     runs-on: ubuntu-latest
