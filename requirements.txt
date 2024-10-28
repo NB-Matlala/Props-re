@@ -8,4 +8,3 @@ threaded
 aiohttp
 azure-storage-blob
 lxml[html_clean]
-os
