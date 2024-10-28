@@ -2,7 +2,7 @@ name: Web PrivPropDev
 
 on:
   workflow_run:
-    workflows: ["Web PrivPropRes"]
+    workflows: ["Web PrivRent"]
     types:
       - completed
 
@@ -10,7 +10,11 @@ on:
 jobs:
   Development:
     runs-on: ubuntu-latest
-
+    env:
+      BASE_URL: ${{ vars.BASE_URL }}
+      CON_STR: ${{ vars.CON_STR }}
+      LOG_TRG: ${{ vars.LOG_STR }}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
