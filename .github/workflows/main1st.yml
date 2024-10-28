@@ -1,4 +1,4 @@
-name: Web PrivPropRes(Inside)3
+name: Web PrivRent(Inside)3
 
 on:
   schedule:
@@ -7,6 +7,10 @@ on:
 jobs:
   scrapeinside3:
     runs-on: ubuntu-latest
+    env:
+      BASE_URL: ${{ vars.BASE_URL }}
+      CON_STR: ${{ vars.CON_STR }}
+      LOG_TRG: ${{ vars.LOG_STR }}
 
     steps:
       - name: Checkout code
@@ -29,4 +33,4 @@ jobs:
 
       - name: Run web scraping
         run: |
-          python PrivatePropRes_Inside3.py 
+          python PrivateRentals_Inside3.py 
