@@ -1,4 +1,4 @@
-name: Web PrivPropCom
+name: Web PrivRentCom
 
 on:
   schedule:
@@ -8,7 +8,11 @@ on:
 jobs:
   Commercial:
     runs-on: ubuntu-latest
-
+    env:
+      BASE_URL: ${{ vars.BASE_URL }}
+      CON_STR: ${{ vars.CON_STR }}
+      LOG_TRG: ${{ vars.LOG_STR }}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -30,4 +34,4 @@ jobs:
 
       - name: Run web scraping
         run: |
-          python PrivatePropReCom.py 
+          python PrivateRentalsCom.py 
