@@ -9,6 +9,10 @@ import csv
 import math
 from datetime import datetime
 from azure.storage.blob import BlobClient
+import os
+
+base_url = os.getenv("BASE_URL")
+con_str = os.getenv("CON_STR")
 
 async def fetch(session, url):
     async with session.get(url) as response:
@@ -33,7 +37,7 @@ def out_extractor(soup):
     title = soup.get('title')
     title = title.replace(' for sale', '')
     list_url = soup.get('href')
-    list_url = f"https://www.privateproperty.co.za{list_url}"
+    list_url = f"{base_url}{list_url}"
     list_id_match = re.search(r'/([^/]+)\.htm$', list_url)
     list_id = list_id_match.group(1)
     detail_div = soup.find('div', class_='development-result-card-link__info-grid--info')
@@ -75,9 +79,9 @@ async def main():
             start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             async def process_province(prov):
-                response_text = await fetch(session, f"https://www.privateproperty.co.za/developments/Gauteng/{prov}.htm")
+                response_text = await fetch(session, f"{base_url}/developments/Gauteng/{prov}.htm")
                 new_links = []
-                new_links.append(f"https://www.privateproperty.co.za/developments/Gauteng/{prov}.htm")
+                new_links.append(f"{base_url}/developments/Gauteng/{prov}.htm")
 
                 async def process_link10(x):
                     try:
@@ -113,7 +117,7 @@ async def main():
 
 
         # Upload the CSV file to Azure Blob Storage
-        connection_string = "DefaultEndpointsProtocol=https;AccountName=privateproperty;AccountKey=zX/k04pby4o1V9av1a5U2E3fehg+1bo61C6cprAiPVnql+porseL1NVw6SlBBCnVaQKgxwfHjZyV+AStKg0N3A==;BlobEndpoint=https://privateproperty.blob.core.windows.net/;QueueEndpoint=https://privateproperty.queue.core.windows.net/;TableEndpoint=https://privateproperty.table.core.windows.net/;FileEndpoint=https://privateproperty.file.core.windows.net/;"
+        connection_string = f"{con_str}"
         container_name = "privatepropdev"
         blob_name = "PrivatePropDev.csv"
 
@@ -126,7 +130,7 @@ async def main():
 
 
         # body = ''
-        # requests.post('https://prod2-09.southafricanorth.logic.azure.com:443/workflows/623f55b4346742178048b209a003f895/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=PxhThWSLOC3sS3JAg54Z3uZEhTvU9zAbNIhkaAhMPN0', json=body)
+        # requests.post(f'{log_trg}', json=body)
 
 
 
@@ -188,7 +192,7 @@ def extractor(soup, list_url ,listID): # extracts from created urls
         try:
             agent_name = json_data['bundleParams']['agencyInfo']['agencyName']
             agent_url = json_data['bundleParams']['agencyInfo']['agencyPageUrl']
-            agent_url = f"https://www.privateproperty.co.za{agent_url}"
+            agent_url = f"{base_url}{agent_url}"
         except:
             agent_name = None
             agent_url = None
@@ -213,9 +217,9 @@ async def main2():
             start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             async def process_province2(prov):
-                response_text = await fetch(session2, f"https://www.privateproperty.co.za/developments/Gauteng/{prov}.htm")
+                response_text = await fetch(session2, f"{base_url}/developments/Gauteng/{prov}.htm")
                 new_links = []
-                new_links.append(f"https://www.privateproperty.co.za/developments/Gauteng/{prov}.htm")
+                new_links.append(f"{base_url}/developments/Gauteng/{prov}.htm")
 
                 async def process_link(x):
                     try:
@@ -249,7 +253,7 @@ async def main2():
                     if count % 1000 == 0:
                         print(f"Processed {count} IDs, sleeping for 20 seconds...")
                         await asyncio.sleep(55)
-                    list_url = f"https://www.privateproperty.co.za/developments/Garsfontein/the-oval-luxury-apartments/{list_id}.htm"
+                    list_url = f"{base_url}/developments/Garsfontein/the-oval-luxury-apartments/{list_id}.htm"
                     try:
                         listing = await fetch2(session2, list_url, semaphore2)
                         list_page = BeautifulSoup(listing, 'html.parser')
