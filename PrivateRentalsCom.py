@@ -21,7 +21,7 @@ async def fetch(session, url):
 ######################################Functions##########################################################
 
 def getPages(soupPage, url):
-        try:
+    try:
         num_pg = soupPage.find('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
         num_pgV = num_pg.text.split('of ')[-1]
         num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
