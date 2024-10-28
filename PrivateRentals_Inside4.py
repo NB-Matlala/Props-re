@@ -9,6 +9,9 @@ import math
 from datetime import datetime
 from azure.storage.blob import BlobClient
 
+base_url = os.getenv("BASE_URL")
+con_str = os.getenv("CON_STR")
+
 async def fetch(session, url, semaphore):
     async with semaphore:
         async with session.get(url) as response:
@@ -139,7 +142,7 @@ def extractor(soup, url): # extracts from created urls
             try:
                 agent_name = json_data['bundleParams']['agencyInfo']['agencyName']
                 agent_url = json_data['bundleParams']['agencyInfo']['agencyPageUrl']
-                agent_url = f"https://www.privateproperty.co.za{agent_url}"
+                agent_url = f"{base_url}{agent_url}"
             except :
                 agent_name = "Private Seller"
                 agent_url = None
@@ -160,7 +163,7 @@ async def main():
     fieldnames = ['Listing ID', 'Erf Size', 'Property Type', 'Floor Size', 'Rates and taxes', 'Levies',
                   'Bedrooms', 'Bathrooms', 'Lounges', 'Dining', 'Garages', 'Covered Parking', 'Storeys', 'Open Parkings',
                   'Agent Name', 'Agent Url', 'Time_stamp']
-    filename = "PrivatePropRes(Inside)4.csv"
+    filename = "PrivateRentals(Inside)4.csv"
     ids = []
     semaphore = asyncio.Semaphore(500)
 
@@ -171,7 +174,7 @@ async def main():
             start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             async def process_province(prov):
-                response_text = await fetch(session, f"https://www.privateproperty.co.za/to-rent/mpumalanga/{prov}", semaphore)
+                response_text = await fetch(session, f"{base_url}/to-rent/mpumalanga/{prov}", semaphore)
                 home_page = BeautifulSoup(response_text, 'html.parser')
 
                 links = []
@@ -179,7 +182,7 @@ async def main():
                 li_items = ul.find_all('li')
                 for area in li_items:
                     link = area.find('a')
-                    link = f"https://www.privateproperty.co.za{link.get('href')}"
+                    link = f"{base_url}{link.get('href')}"
                     links.append(link)
 
                 new_links = []
@@ -192,7 +195,7 @@ async def main():
                             li_items2 = ul2.find_all('li', class_='region-content-holder__list')
                             for area2 in li_items2:
                                 link2 = area2.find('a')
-                                link2 = f"https://www.privateproperty.co.za{link2.get('href')}"
+                                link2 = f"{base_url}{link2.get('href')}"
                                 new_links.append(link2)
                         else:
                             new_links.append(l)
@@ -231,7 +234,7 @@ async def main():
                     if count % 1000 == 0:
                         print(f"Processed {count} IDs, sleeping for 20 seconds...")
                         await asyncio.sleep(55)
-                    list_url = f"https://www.privateproperty.co.za/to-rent/something/something/something/{list_id}"
+                    list_url = f"{base_url}/to-rent/something/something/something/{list_id}"
                     try:
                         listing = await fetch(session, list_url, semaphore)
                         list_page = BeautifulSoup(listing, 'html.parser')
@@ -249,9 +252,9 @@ async def main():
             print(f"Start Time: {start_time}")
             print(f"End Time: {end_time}")
 
-    connection_string = "DefaultEndpointsProtocol=https;AccountName=privateproperty;AccountKey=zX/k04pby4o1V9av1a5U2E3fehg+1bo61C6cprAiPVnql+porseL1NVw6SlBBCnVaQKgxwfHjZyV+AStKg0N3A==;BlobEndpoint=https://privateproperty.blob.core.windows.net/;QueueEndpoint=https://privateproperty.queue.core.windows.net/;TableEndpoint=https://privateproperty.table.core.windows.net/;FileEndpoint=https://privateproperty.file.core.windows.net/;"
+    connection_string = f"{con_str}"
     container_name = "privatepropre"
-    blob_name = "PrivatePropRes(Inside)4.csv"
+    blob_name = "PrivateRentals(Inside)4.csv"
 
     blob_client = BlobClient.from_connection_string(connection_string, container_name, blob_name)
     
