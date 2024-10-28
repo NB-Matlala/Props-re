@@ -12,7 +12,7 @@ session = HTMLSession()
 # soup = BeautifulSoup(response.html.html, 'html.parser')
 secret_str = os.getenv("SECRET_STR")
 url = secret_str
-# response = session.get(url)
-# html_content = BeautifulSoup(response.content, 'html.parser')
+response = session.get(f"{url}")
+html_content = BeautifulSoup(response.content, 'html.parser')
 
-print("Code running..\n",url)
+print("Code running..\n",html_content)
