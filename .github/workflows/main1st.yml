@@ -2,8 +2,7 @@ name: Web PrivRent(Inside)3
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '55 15 * * *' # Runs at 00:30 CAT (UTC+2)
+  
 
 jobs:
   scrapeinside3:
