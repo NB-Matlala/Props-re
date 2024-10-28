@@ -8,6 +8,7 @@ import csv
 import math
 from datetime import datetime
 from azure.storage.blob import BlobClient
+import os
 
 base_url = os.getenv("BASE_URL")
 con_str = os.getenv("CON_STR")
