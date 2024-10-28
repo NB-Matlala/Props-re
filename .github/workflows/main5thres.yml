@@ -1,15 +1,19 @@
-name: Web PrivPropRes
+name: Web PrivRent
 
 on:
   workflow_run:
-    workflows: ["Web PrivPropCom"]
+    workflows: ["Web PrivRentCom"]
     types:
       - completed
 
 jobs:
   followupRes:
     runs-on: ubuntu-latest
-
+    env:
+      BASE_URL: ${{ vars.BASE_URL }}
+      CON_STR: ${{ vars.CON_STR }}
+      LOG_TRG: ${{ vars.LOG_STR }}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -31,4 +35,4 @@ jobs:
 
       - name: Run web scraping
         run: |
-          python PrivatePropRes.py 
+          python PrivateRentals.py 
