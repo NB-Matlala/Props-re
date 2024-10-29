@@ -9,10 +9,12 @@ import math
 from datetime import datetime
 from azure.storage.blob import BlobClient
 import os
+import requests
 
 base_url = os.getenv("BASE_URL")
 con_str = os.getenv("CON_STR")
 con_str_coms = os.getenv("CON_STR_COMS")
+log_trg = os.getenv("LOG_TRG")
 
 ids = []
 
@@ -442,3 +444,10 @@ blob_pics = BlobClient.from_connection_string(
 )
 with open(filename_pics, "rb") as data:
     blob_pics.upload_blob(data, overwrite=True)
+
+
+
+###########################################################################################
+body = {"Pipeline" : 3}
+requests.post(f'{log_trg}', json=body)
+print("Request sent.")
