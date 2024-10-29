@@ -2,7 +2,8 @@ name: Web PrivRentCom
 
 on:
   workflow_dispatch:
-
+  schedule:
+    - cron: '30 04 * * 1'
 
 jobs:
   Commercial:
