@@ -1,6 +1,7 @@
 name: Web PrivRent(Inside)4
 
 on:
+  workflow_disptach:
   workflow_run:
     workflows: ["Web PrivRent(Inside)2"]
     types:
