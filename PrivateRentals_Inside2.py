@@ -204,7 +204,7 @@ for t in threads:
 
 
 # # Write to gzip format
-gz_filename = "PrivateRental(Inside)2.csv"
+gz_filename = "PrivateRental(Inside)2.csv.gz"
 with gzip.open(gz_filename, "wt", newline="", encoding="utf-8") as gzfile:
     fieldnames = results[0].keys() if results else []
     writer = csv.DictWriter(gzfile, fieldnames=fieldnames)
