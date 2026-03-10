@@ -2,10 +2,11 @@ name: Web PrivRent
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Web PrivRentCom"]
-    types:
-      - completed
+  schedule:
+    - cron: '55 23 * * 5'
+    # workflows: ["Web PrivRentCom"]
+    # types:
+    #   - completed
 
 jobs:
   followupRes:
