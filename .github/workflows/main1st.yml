@@ -2,12 +2,15 @@ name: Web PrivRent(Inside)3
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '00 06 * * 1'
+  workflow_run:
+    workflows: ["Web PrivRent(Inside)2"]
+  # schedule:
+  #   - cron: '00 06 * * 1'
 
 jobs:
   scrapeinside3:
     runs-on: ubuntu-latest
+    concurrency: multirunP3
     env:
       BASE_URL: ${{ vars.BASE_URL }}
       CON_STR: ${{ vars.CON_STR }}
