@@ -229,6 +229,6 @@ with open(gz_filename, "rb") as data:
 
 
 ###########################################################################################
-body = {"Pipeline" : 3}
-requests.post(f'{log_trg}', json=body)
-print("Request sent.")
+# body = {"Pipeline" : 3}
+# requests.post(f'{log_trg}', json=body)
+# print("Request sent.")
