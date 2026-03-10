@@ -3,13 +3,14 @@ name: Web PrivRent(Inside)
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Web PrivRent(Inside)3"]
+    workflows: ["Web PrivRent"]
     types:
       - completed
 
 jobs:
   followupjob1:
     runs-on: ubuntu-latest
+    concurrency: multirunP1
     env:
       BASE_URL: ${{ vars.BASE_URL }}
       CON_STR: ${{ vars.CON_STR }}
