@@ -9,6 +9,7 @@ on:
 jobs:
   followupjob3:
     runs-on: ubuntu-latest
+    concurrency: multirunP4
     env:
       BASE_URL: ${{ vars.BASE_URL }}
       CON_STR: ${{ vars.CON_STR }}
