@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Web PrivRent(Inside)2"]
+    types: 
+      - completed
   # schedule:
   #   - cron: '00 06 * * 1'
 
