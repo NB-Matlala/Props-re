@@ -206,7 +206,7 @@ with open(filename_pics, mode='w', newline='', encoding='utf-8') as file:
     writer.writerows(pic_results)
 
 ## Upload to Azure Blob Storage
-blob_connection_string = f"{con_str_comments}"
+blob_connection_string = f"{con_str_coms}"
 blob = BlobClient.from_connection_string(
     blob_connection_string,
     container_name="comments-pics",
