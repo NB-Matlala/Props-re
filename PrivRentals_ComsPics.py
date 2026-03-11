@@ -159,10 +159,10 @@ def extractor_pics(soup, prop_ID): # extracts from created urls
         return []
 
 fieldnames = ['Listing ID', 'Description', 'Latitude', 'Longitude', 'Time_stamp']
-filename = "PrivRentComments.csv"
+filename = "PrivRentComments.csv.gz"
 
 fieldnames_pics = ['Listing_ID', 'Photo_Link']
-filename_pics = "PrivRentPictures.csv"
+filename_pics = "PrivRentPictures.csv.gz"
 
 # Initialize thread queue and results list
 queue = Queue()
