@@ -206,8 +206,7 @@ with gzip.open(gz_filename, "wt", newline="", encoding="utf-8") as gzfile:
 
 gz_filename_pics = filename_pics
 with gzip.open(gz_filename_pics, "wt", newline="", encoding="utf-8") as gzfile:
-    fieldnames = pic_results[0].keys() if pic_results else []
-    writer = csv.DictWriter(gzfile, fieldnames=fieldnames)
+    writer = csv.DictWriter(gzfile, fieldnames=fieldnames_pics)
     writer.writeheader()
     writer.writerows(pic_results)
 
