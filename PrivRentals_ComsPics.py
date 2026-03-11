@@ -18,9 +18,10 @@ from azure.storage.blob import BlobClient
 session = HTMLSession()
 
 list_ids = []
-base_url = "https://www.privateproperty.co.za"
-con_str = "DefaultEndpointsProtocol=https;AccountName=privateproperty;AccountKey=zX/k04pby4o1V9av1a5U2E3fehg+1bo61C6cprAiPVnql+porseL1NVw6SlBBCnVaQKgxwfHjZyV+AStKg0N3A==;BlobEndpoint=https://privateproperty.blob.core.windows.net/;QueueEndpoint=https://privateproperty.queue.core.windows.net/;TableEndpoint=https://privateproperty.table.core.windows.net/;FileEndpoint=https://privateproperty.file.core.windows.net/;"
-con_str_comments = 
+
+base_url = os.getenv("BASE_URL")
+con_str = os.getenv("CON_STR")
+con_str_coms = os.getenv("CON_STR_COMS")
 
 def getIds(soup):
     try:
