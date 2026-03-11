@@ -2,7 +2,6 @@
 #  --- Rentals Comments & Pictures ---
 #################################################################################################################################################################################
 print(f"Starting with Comments & Pics Extraction:\n")
-
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
 import re
@@ -13,7 +12,9 @@ import threading
 from queue import Queue
 from datetime import datetime
 import csv
+import gzip
 from azure.storage.blob import BlobClient
+import os
 
 session = HTMLSession()
 
