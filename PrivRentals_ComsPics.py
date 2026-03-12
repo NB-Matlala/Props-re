@@ -227,3 +227,9 @@ blob_pics = BlobClient.from_connection_string(
 )
 with open(gz_filename_pics, "rb") as data:
     blob_pics.upload_blob(data, overwrite=True)
+
+
+###########################################################################################
+body = {"Pipeline" : 3}
+requests.post(f'{log_trg}', json=body)
+print("Request sent.")
