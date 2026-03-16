@@ -230,6 +230,8 @@ with open(gz_filename_pics, "rb") as data:
 
 
 ###########################################################################################
+import requests
+
 body = {"Pipeline" : 3}
 requests.post(f'{log_trg}', json=body)
 print("Request sent.")
