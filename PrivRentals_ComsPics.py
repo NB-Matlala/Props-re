@@ -23,6 +23,7 @@ list_ids = []
 base_url = os.getenv("BASE_URL")
 con_str = os.getenv("CON_STR")
 con_str_coms = os.getenv("CON_STR_COMS")
+log_trg = os.getenv("LOG_TRG")
 
 def getIds(soup):
     try:
