@@ -25,7 +25,7 @@ con_str = os.getenv("CON_STR")
 con_str_coms = os.getenv("CON_STR_COMS")
 log_trg = os.getenv("LOG_TRG")
 
-print(log_trg)
+print(f"Trg: {log_trg}")
 
 # def getIds(soup):
 #     try:
