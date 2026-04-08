@@ -3,7 +3,7 @@ name: Web PrivRent
 on:
   workflow_dispatch:
   schedule:
-    - cron: '55 23 * * 5'
+    - cron: '55 15 * * 0'
     # workflows: ["Web PrivRentCom"]
     # types:
     #   - completed
