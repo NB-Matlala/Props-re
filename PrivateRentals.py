@@ -1,4 +1,4 @@
-
+''' This section of the code runs All Non commerical Rental Props'''
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
 import re
@@ -41,6 +41,44 @@ def worker(queue, results):
             print(f"Request failed for {url}: {e}")
         finally:
             queue.task_done()
+
+def get_web_total():
+    res_com = session.get(f'{base_url}/commercial-rentals/south-africa/1')
+    soup_com = BeautifulSoup(res_com.content, 'html.parser')
+
+    tot_div_com = soup_com.find('div', class_ = 'sort-and-listing-count').text
+
+    total_list_com = tot_div_com.split('of ')[1].split(' results')[0]
+    total_list_com = re.sub(r"[\s\xa0]", "", total_list_com)
+
+    res = session.get(f'{base_url}/to-rent/south-africa/1')
+    soup = BeautifulSoup(res.content, 'html.parser')
+
+    tot_div = soup.find('div', class_ = 'sort-and-listing-count').text
+
+    total_list = tot_div.split('of ')[1].split(' results')[0]
+    total_list = re.sub(r"[\s\xa0]", "", total_list)
+
+
+    web_total = int(total_list) + int(total_list_com) 
+
+    # _____________ INSERT Total To Blob _____________
+    timestamp  = datetime.now().strftime('%Y-%m-%d')
+    filename   = f"PrivPropRentalTotal_{timestamp}.csv"
+    rows       = [{"total_listings": web_total, "Time_stamp": timestamp}]
+
+    with open(filename, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["total_listings", "Time_stamp"])
+        writer.writeheader()
+        writer.writerows(rows)
+
+    blob_client = BlobClient.from_connection_string(con_str, 'webtotals', filename)
+    with open(filename, "rb") as f:
+        blob_client.upload_blob(f, overwrite=True)
+
+    print(f"Total Listings ({web_total}) uploaded to Blob.")  
+    # ___________________ END ________________________
+
 
 def getPages(soupPage, url):
     try:
@@ -126,6 +164,8 @@ def extractor(soup, url, pt):
 # Initialize thread queue and results list
 queue = Queue()
 results = []
+
+get_web_total()
 
 prop_types = ['houses-to-rent', 'apartments-to-rent', 'townhouses-to-rent','land-to-rent', 'garden-cottages-to-rent']
 
@@ -678,9 +718,5 @@ with open(gz_filename, "rb") as data:
     blob.upload_blob(data, overwrite=True)
 
 print("CSV file uploaded to Azure Blob Storage.")
-
-
-
-
 
 ################################################################################################################################################################################################################################################
