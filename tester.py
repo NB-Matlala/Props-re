@@ -26,3 +26,5 @@ def get_web_total():
             retry += 1
             print(f"[Total Listings Error]: {e}\nAttempt ({retry})")
             time.sleep(2)
+
+get_web_total()
