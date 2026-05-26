@@ -4,15 +4,25 @@ from bs4 import BeautifulSoup
 
 session = HTMLSession()
 
-# url = "https://www.airbnb.co.za/?tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes&search_mode=flex_destinations_search&flexible_trip_lengths%5B%5D=one_week&location_search=MIN_MAP_BOUNDS&monthly_start_date=2024-08-01&monthly_length=3&monthly_end_date=2024-11-01&price_filter_input_type=0&channel=EXPLORE&category_tag=Tag%3A8538&search_type=category_change"
+def get_web_total():
+    import re
+    retry = 0
+    web_total = None
 
-# response = session.get(url)
-# response.html.render()  # This executes the JavaScript
+    while retry < 5:
+        try:
+            res = session.get('https://www.property24.com/for-sale/advanced-search/results?sp=pid%3d1%2c5%2c6%2c9%2c7%2c8%2c2%2c3%2c14%26so%3dNewest')
+            soup = BeautifulSoup(res.content, 'html.parser')
 
-# soup = BeautifulSoup(response.html.html, 'html.parser')
-secret_str = os.getenv("SECRET_STR")
-url = secret_str
-response = session.get(f"{url}")
-html_content = BeautifulSoup(response.content, 'html.parser')
+            tot_div = soup.find('div', class_ = 'panel-body').text
+            total_list = tot_div.split('of ')[1]
+            total_list = re.sub(r"[\s\xa0]", "", total_list)
 
-print("Code running..\n",html_content)
+            web_total = int(total_list)
+            print(f"{web_total} found")
+            break
+
+        except Exception as e:
+            retry += 1
+            print(f"[Total Listings Error]: {e}\nAttempt ({retry})")
+            time.sleep(2)
