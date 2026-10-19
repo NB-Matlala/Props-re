@@ -58,7 +58,7 @@ def get_web_total():
 
     total_list = tot_div.split('of ')[1].split(' results')[0]
     total_list = re.sub(r"[\s\xa0]", "", total_list)
-
+    total_list = total_list.replace("properties","")
 
     web_total = int(total_list) + int(total_list_com) 
 
