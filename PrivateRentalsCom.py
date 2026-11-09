@@ -23,9 +23,8 @@ async def fetch(session, url):
 
 def getPages(soupPage, url):
     try:
-        num_pg = soupPage.find('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
-        num_pgV = num_pg.text.split('of ')[-1]
-        num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
+        num_pg = soupPage.find('div', class_='sort-and-listing-count').text
+        num_pgV = int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
         pages = math.ceil(int(num_pgV) / 20)
         return pages
     except (ValueError, AttributeError) as e:
@@ -662,7 +661,7 @@ async def main():
                         x = f"{x}?pt=0"
                         x_response_text = await fetch(session, x)
                         x_page = BeautifulSoup(x_response_text, 'html.parser')
-                        num_pages = getPages(x_page, x)
+                        num_pages = (x_page, x)
 
                         for s in range(1, num_pages + 1):
                             if s % 10 == 0:
@@ -684,7 +683,7 @@ async def main():
                         x = f"{x}?pt=6"
                         x_response_text = await fetch(session, x)
                         x_page = BeautifulSoup(x_response_text, 'html.parser')
-                        num_pages = getPages(x_page, x)
+                        num_pages = (x_page, x)
 
                         for s in range(1, num_pages + 1):
                             if s % 10 == 0:
@@ -706,7 +705,7 @@ async def main():
                         x = f"{x}?pt=9"
                         x_response_text = await fetch(session, x)
                         x_page = BeautifulSoup(x_response_text, 'html.parser')
-                        num_pages = getPages(x_page, x)
+                        num_pages = (x_page, x)
 
                         for s in range(1, num_pages + 1):
                             if s % 10 == 0:
@@ -728,7 +727,7 @@ async def main():
                         x = f"{x}?pt=8"
                         x_response_text = await fetch(session, x)
                         x_page = BeautifulSoup(x_response_text, 'html.parser')
-                        num_pages = getPages(x_page, x)
+                        num_pages = (x_page, x)
 
                         for s in range(1, num_pages + 1):
                             if s % 10 == 0:
@@ -750,7 +749,7 @@ async def main():
                         x = f"{x}?pt=4"
                         x_response_text = await fetch(session, x)
                         x_page = BeautifulSoup(x_response_text, 'html.parser')
-                        num_pages = getPages(x_page, x)
+                        num_pages = (x_page, x)
 
                         for s in range(1, num_pages + 1):
                             if s % 10 == 0:
@@ -772,7 +771,7 @@ async def main():
                         x = f"{x}?pt=7"
                         x_response_text = await fetch(session, x)
                         x_page = BeautifulSoup(x_response_text, 'html.parser')
-                        num_pages = getPages(x_page, x)
+                        num_pages = (x_page, x)
 
                         for s in range(1, num_pages + 1):
                             if s % 10 == 0:
@@ -827,7 +826,7 @@ async def fetch2(session, url, semaphore):
             return await response.text()
 
 ######################################Functions##########################################################
-def getPages2(soupPage, url):
+def 2(soupPage, url):
     try:
         num_pg = soupPage.find('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
         num_pgV = num_pg.text.split('of ')[-1]
