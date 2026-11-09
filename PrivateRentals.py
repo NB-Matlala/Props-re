@@ -49,13 +49,13 @@ def get_web_total():
     # total_list_com = tot_div_com.split('of ')[1].split(' results')[0]
     # total_list_com = re.sub(r"[\s\xa0]", "", total_list_com)
     tot_div_com = soup_com.find('div', class_='sort-and-listing-count').text
-    total_list_com = int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
+    total_list_com = int(re.sub(r'\D', '', tot_div_com.split('of ')[-1]))
 
     res = session.get(f'{base_url}/to-rent/south-africa/1')
     soup = BeautifulSoup(res.content, 'html.parser')
 
     tot_div = soup.find('div', class_ = 'sort-and-listing-count').text
-    total_list =  int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
+    total_list =  int(re.sub(r'\D', '', tot_div.split('of ')[-1]))
 
     web_total = int(total_list) + int(total_list_com) 
 
