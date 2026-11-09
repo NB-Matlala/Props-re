@@ -168,7 +168,7 @@ for pt in prop_types:
     x = f"{base_url}/{pt}/south-africa/1?"
     land = session.get(x)
     land_html = BeautifulSoup(land.content, 'html.parser')
-    pgs = (land_html, x)
+    pgs = getPages(land_html, x)
 
     for p in range(1, pgs + 1):
         url = f"{x}page={p}"
