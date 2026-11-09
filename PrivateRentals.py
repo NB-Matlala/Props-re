@@ -45,20 +45,17 @@ def worker(queue, results):
 def get_web_total():
     res_com = session.get(f'{base_url}/commercial-rentals/south-africa/1')
     soup_com = BeautifulSoup(res_com.content, 'html.parser')
-
-    tot_div_com = soup_com.find('div', class_ = 'sort-and-listing-count').text
-
-    total_list_com = tot_div_com.split('of ')[1].split(' results')[0]
-    total_list_com = re.sub(r"[\s\xa0]", "", total_list_com)
+    # tot_div_com = soup_com.find('div', class_ = 'sort-and-listing-count').text
+    # total_list_com = tot_div_com.split('of ')[1].split(' results')[0]
+    # total_list_com = re.sub(r"[\s\xa0]", "", total_list_com)
+    tot_div_com = soupPage.find('div', class_='sort-and-listing-count').text
+    total_list_com = int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
 
     res = session.get(f'{base_url}/to-rent/south-africa/1')
     soup = BeautifulSoup(res.content, 'html.parser')
 
     tot_div = soup.find('div', class_ = 'sort-and-listing-count').text
-
-    total_list = tot_div.split('of ')[1].split(' results')[0]
-    total_list = re.sub(r"[\s\xa0]", "", total_list)
-    total_list = total_list.replace("properties","")
+    total_list =  int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
 
     web_total = int(total_list) + int(total_list_com) 
 
@@ -82,10 +79,8 @@ def get_web_total():
 
 def getPages(soupPage, url):
     try:
-        num_pg = soupPage.find('div', class_='sort-and-listing-count')
-        # ('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
-        num_pgV = num_pg.text.split('of ')[-1]
-        num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
+        num_pg = soupPage.find('div', class_='sort-and-listing-count').text
+        num_pgV = int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
         pages = math.ceil(int(num_pgV) / 20)
         return pages
     except (ValueError, AttributeError) as e:
@@ -173,7 +168,7 @@ for pt in prop_types:
     x = f"{base_url}/{pt}/south-africa/1?"
     land = session.get(x)
     land_html = BeautifulSoup(land.content, 'html.parser')
-    pgs = getPages(land_html, x)
+    pgs = (land_html, x)
 
     for p in range(1, pgs + 1):
         url = f"{x}page={p}"
@@ -275,7 +270,7 @@ def worker(queue, results):
         finally:
             queue.task_done()
 
-def getPages(soupPage, url):
+def (soupPage, url):
     try:
         num_pg = soupPage.find('div', class_='sort-and-listing-count')
         # ('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
@@ -428,10 +423,8 @@ def worker(queue, results):
 
 def getPages(soupPage, url):
     try:
-        num_pg = soupPage.find('div', class_='sort-and-listing-count')
-        # ('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
-        num_pgV = num_pg.text.split('of ')[-1]
-        num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
+        num_pg = soupPage.find('div', class_='sort-and-listing-count').text
+        num_pgV = int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
         pages = math.ceil(int(num_pgV) / 20)
         return pages
     except (ValueError, AttributeError) as e:
@@ -616,10 +609,8 @@ def worker(queue, results):
 
 def getPages(soupPage, url):
     try:
-        num_pg = soupPage.find('div', class_='sort-and-listing-count')
-        # ('div', class_='listing-results-layout__mobile-item-count txt-small-regular')
-        num_pgV = num_pg.text.split('of ')[-1]
-        num_pgV = num_pgV.replace('\xa0', '').replace(' results', '')
+        num_pg = soupPage.find('div', class_='sort-and-listing-count').text
+        num_pgV = int(re.sub(r'\D', '', num_pg.split('of ')[-1]))
         pages = math.ceil(int(num_pgV) / 20)
         return pages
     except (ValueError, AttributeError) as e:
